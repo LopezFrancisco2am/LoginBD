@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Clientes</title>
+    <!-- Incluye Bootstrap CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        body {
+            background-color: #f0f0f0; /* Cambia el color de fondo aquí */
+        }
+        /* Opcional: Define el color del texto como negro por defecto */
+        .text-color-default {
+            color: black; /* Cambia el color del texto aquí si es necesario */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Lista de Clientes</h4>
+                <div class="table-responsive">
+                    <table id="clientesTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Los datos se cargarán aquí con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row table-container">
+            <div class="col-md-12">
+                <h4>Clientes con mas deudas</h4>
+                <div class="table-responsive">
+                    <table id="DeudasTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                      
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                                <th>Email</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Los datos se cargarán aquí con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+  
+
+    <script>
+            fetch('/Acceso/GetClientes')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#clientesTable tbody');
+                    tableBody.innerHTML = ''; // Limpia el contenido actual               
+                        data.forEach(cliente => {                                           
+                            const textColorClass = 'text-color-default';
+
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                        <td class="${textColorClass}">${cliente.ClienteId || ''}</td>
+                                        <td class="${textColorClass}">${cliente.Nombre || ''}</td>
+                                        <td class="${textColorClass}">${cliente.Telefono || ''}</td>
+                                        <td class="${textColorClass}">${cliente.Direccion || ''}</td>
+                                        <td class="${textColorClass}">${cliente.Email || ''}</td>
+
+                                    `;
+                            tableBody.appendChild(row);
+                        });
+                    
+                    
+                })
+
+
+        fetch('/Acceso/GetClientesDeudores')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#DeudasTable tbody');
+                tableBody.innerHTML = ''; // Limpia el contenido actual               
+                data.forEach(cliente => {
+                    const textColorClass = 'text-color-default';
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                                       
+                                        <td class="${textColorClass}">${cliente.Nombre || ''}</td>
+                                        <td class="${textColorClass}">${cliente.Telefono || ''}</td>
+                                        <td class="${textColorClass}">${cliente.Direccion || ''}</td>
+                                        <td class="${textColorClass}">${cliente.Email || ''}</td>
+                                        <td class="${textColorClass}">${cliente.Monto || ''}</td>
+
+                                    `;
+                    tableBody.appendChild(row);
+                });
+
+
+            })
+    </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Paquetes y Destinos Más Visitados</title>
+    <!-- Incluye Bootstrap CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        body {
+            background-color: #f0f0f0; /* Cambia el color de fondo aquí */
+        }
+
+        .circle-red {
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        .circle-green {
+            width: 10px;
+            height: 10px;
+            background-color: green;
+            border-radius: 50%;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        .circle-black {
+            width: 10px;
+            height: 10px;
+            background-color: black;
+            border-radius: 50%;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        .text-color-default {
+            color: black; /* Cambia el color del texto aquí si es necesario */
+        }
+
+        .table-container {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Lista de Paquetes</h4>
+                <div class="table-responsive">
+                    <table id="paquetesTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Descripción</th>
+                                <th>Cantidad de Pasajeros</th>
+                                <th>Cliente</th>
+                                <th>Precio</th>
+                                <th>Estado</th> <!-- Columna para el estado del paquete -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Los datos se cargarán aquí con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row table-container">
+            <div class="col-md-12">
+                <h4>Destinos Más Visitados</h4>
+                <div class="table-responsive">
+                    <table id="destinosTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>País</th>
+                                <th>Provincia</th>
+                                <th>Descripción</th>
+                                <th>Visitas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Los datos se cargarán aquí con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cargar paquetes
+        fetch('/Acceso/GetPaquetes')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Datos de paquetes:', data); // Agrega esta línea para depuración
+                const tableBody = document.querySelector('#paquetesTable tbody');
+                tableBody.innerHTML = ''; // Limpia el contenido actual
+
+                data.forEach(paquete => {
+                    // Determina el círculo de estado basado en el estado del paquete
+                    const { estadoCirculo, DescripcionEstado } = getEstadoCirculo(paquete.DescripcionEstado);
+
+                    // Crea una fila para cada paquete
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                                        <td>${paquete.PaqueteId || ''}</td>
+                                        <td>${paquete.Descripcion || ''}</td>
+                                        <td>${paquete.CantidadPasajeros || ''}</td>
+                                        <td>${paquete.Cliente ? paquete.Cliente.Nombre : ''}</td>
+                                        <td>${paquete.Precio || ''}</td>
+                                        <td>${estadoCirculo} ${DescripcionEstado}</td> <!-- Agrega el círculo y descripción del estado -->
+                                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error al obtener datos de paquetes:', error));
+
+        // Cargar destinos más visitados
+        fetch('/Acceso/GetLugares')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Datos de destinos:', data); // Agrega esta línea para depuración
+                const tableBody = document.querySelector('#destinosTable tbody');
+                tableBody.innerHTML = ''; // Limpia el contenido actual
+
+                data.forEach(destino => {
+                    // Crea una fila para cada destino
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                                        <td>${destino.IdDestino || ''}</td>
+                                        <td>${destino.Pais || ''}</td>
+                                        <td>${destino.Provincia || ''}</td>
+                                        <td>${destino.Descripcion || ''}</td>
+                                        <td>${destino.NumeroVisitas || ''}</td>
+                                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error al obtener datos de destinos más visitados:', error));
+
+        // Función para obtener el círculo y descripción del estado
+        function getEstadoCirculo(DescripcionEstado) {
+            console.log('Estado de descripción recibido:', DescripcionEstado); // Agrega esta línea para depuración
+            switch (DescripcionEstado) {
+                case 'Pagado':
+                    return { estadoCirculo: '<span class="circle-green"></span>', DescripcionEstado: 'Pagado' };
+                case 'Pendiente de Pago':
+                    return { estadoCirculo: '<span class="circle-red"></span>', DescripcionEstado: 'Pendiente de Pago' };
+                case 'Cancelado':
+                    return { estadoCirculo: '<span class="circle-black"></span>', DescripcionEstado: 'Cancelado' };
+                default:
+                    return { estadoCirculo: '', DescripcionEstado: 'Desconocido' };
+            }
+        }
+    </script>
+</body>
+</html>

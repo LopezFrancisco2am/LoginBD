@@ -1,0 +1,97 @@
+﻿body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #2c3e50; /* Fondo oscuro para un look moderno */
+}
+
+.user_card {
+    height: 400px;
+    width: 350px;
+    margin: 0 auto; /* Centra horizontalmente */
+    background: #34495e; /* Fondo gris oscuro para la tarjeta */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+    border-radius: 10px; /* Bordes más redondeados */
+    max-width: 100%; /* Asegura que la tarjeta no se desborde en pantallas pequeñas */
+}
+
+.brand_logo_container {
+    position: absolute;
+    height: 120px;
+    width: 120px;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: #1abc9c; /* Verde moderno y vibrante */
+    padding: 10px;
+    text-align: center;
+}
+
+.brand_logo {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    border: 3px solid #ffffff; /* Borde blanco para contraste */
+    object-fit: cover; /* Asegura que la imagen mantenga su relación de aspecto */
+}
+
+.form_container {
+    margin-top: 60px; /* Ajusta el margen superior */
+}
+
+.login_btn {
+    width: 100%;
+    background: #e74c3c; /* Rojo oscuro para el botón */
+    color: #ffffff;
+    border: none; /* Elimina el borde por defecto */
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease; /* Transición suave para el cambio de color */
+}
+
+    .login_btn:hover {
+        background: #c0392b; /* Color de hover más oscuro */
+    }
+
+    .login_btn:focus {
+        box-shadow: none;
+        outline: none;
+    }
+
+.login_container {
+    padding: 0 2rem;
+}
+
+.input-group-text {
+    background: #e74c3c; /* Rojo oscuro para el grupo de entrada */
+    color: #ffffff;
+    border: none;
+    border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.input_user,
+.input_pass {
+    border: 1px solid #555; /* Borde gris oscuro para un contraste sutil */
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s ease; /* Transición suave para el borde */
+    background: #2c3e50; /* Fondo oscuro para los campos de entrada */
+    color: #ffffff; /* Color del texto en los campos de entrada */
+}
+
+    .input_user:focus,
+    .input_pass:focus {
+        border-color: #e74c3c; /* Borde de color al enfocar */
+        box-shadow: none;
+        outline: none;
+    }
