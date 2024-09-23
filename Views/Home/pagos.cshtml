@@ -2,17 +2,17 @@
 <html>
 <head>
     <title>Pagos</title>
-    <!-- Incluye Bootstrap CSS -->
+  
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <style type="text/css">
         body {
-            background-color: #f0f0f0; /* Cambia el color de fondo aquí */
+            background-color: #f0f0f0; 
         }
-        /* Opcional: Define el color del texto como negro por defecto */
+    
         .text-color-default {
-            color: black; /* Cambia el color del texto aquí si es necesario */
+            color: black; 
         }
 
         .table-container {
@@ -37,7 +37,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Los datos se cargarán aquí con JavaScript -->
+                      
                         </tbody>
                     </table>
                 </div>
@@ -50,10 +50,10 @@
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.querySelector('#pagosTable tbody');
-                tableBody.innerHTML = ''; // Limpia el contenido actual
+                tableBody.innerHTML = '';
 
                 data.forEach(pago => {
-                    // Crea una fila para cada pago
+         
                     const row = document.createElement('tr');
                     row.innerHTML = `
                 <td>${pago.IdPago || ''}</td>

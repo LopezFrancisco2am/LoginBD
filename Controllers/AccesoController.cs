@@ -166,7 +166,7 @@ namespace LoginBD.Controllers
                     }
                 }
 
-                // Luego, obtenemos los clientes asociados a los paquetes
+   
                 var clienteIds = paquetes.Select(p => p.ClienteId).Distinct().ToList();
                 var queryClientes = "SELECT * FROM Clientes WHERE ClienteId IN (" + string.Join(",", clienteIds) + ")";
                 var clientes = new Dictionary<int, Cliente>();
@@ -190,7 +190,7 @@ namespace LoginBD.Controllers
                     }
                 }
 
-                // Asignamos los clientes a los paquetes
+
                 foreach (var paquete in paquetes)
                 {
                     if (clientes.TryGetValue(paquete.ClienteId, out var cliente))

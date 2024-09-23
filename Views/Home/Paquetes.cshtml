@@ -2,14 +2,12 @@
 <html>
 <head>
     <title>Lista de Paquetes y Destinos Más Visitados</title>
-    <!-- Incluye Bootstrap CSS -->
+
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <style type="text/css">
-        body {
-            background-color: #f0f0f0; /* Cambia el color de fondo aquí */
-        }
+ 
 
         .circle-red {
             width: 10px;
@@ -42,7 +40,7 @@
         }
 
         .text-color-default {
-            color: black; /* Cambia el color del texto aquí si es necesario */
+            color: black; 
         }
 
         .table-container {
@@ -64,11 +62,11 @@
                                 <th>Cantidad de Pasajeros</th>
                                 <th>Cliente</th>
                                 <th>Precio</th>
-                                <th>Estado</th> <!-- Columna para el estado del paquete -->
+                                <th>Estado</th> 
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Los datos se cargarán aquí con JavaScript -->
+                         
                         </tbody>
                     </table>
                 </div>
@@ -90,7 +88,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Los datos se cargarán aquí con JavaScript -->
+                     
                         </tbody>
                     </table>
                 </div>
@@ -99,19 +97,19 @@
     </div>
 
     <script>
-        // Cargar paquetes
+      
         fetch('/Acceso/GetPaquetes')
             .then(response => response.json())
             .then(data => {
-                console.log('Datos de paquetes:', data); // Agrega esta línea para depuración
+
                 const tableBody = document.querySelector('#paquetesTable tbody');
-                tableBody.innerHTML = ''; // Limpia el contenido actual
+                tableBody.innerHTML = ''; 
 
                 data.forEach(paquete => {
-                    // Determina el círculo de estado basado en el estado del paquete
+                 
                     const { estadoCirculo, DescripcionEstado } = getEstadoCirculo(paquete.DescripcionEstado);
 
-                    // Crea una fila para cada paquete
+     
                     const row = document.createElement('tr');
                     row.innerHTML = `
                                         <td>${paquete.PaqueteId || ''}</td>
@@ -126,16 +124,16 @@
             })
             .catch(error => console.error('Error al obtener datos de paquetes:', error));
 
-        // Cargar destinos más visitados
+s
         fetch('/Acceso/GetLugares')
             .then(response => response.json())
             .then(data => {
-                console.log('Datos de destinos:', data); // Agrega esta línea para depuración
+                console.log('Datos de destinos:', data); 
                 const tableBody = document.querySelector('#destinosTable tbody');
-                tableBody.innerHTML = ''; // Limpia el contenido actual
+                tableBody.innerHTML = '';
 
                 data.forEach(destino => {
-                    // Crea una fila para cada destino
+                 
                     const row = document.createElement('tr');
                     row.innerHTML = `
                                         <td>${destino.IdDestino || ''}</td>
@@ -149,9 +147,9 @@
             })
             .catch(error => console.error('Error al obtener datos de destinos más visitados:', error));
 
-        // Función para obtener el círculo y descripción del estado
+    
         function getEstadoCirculo(DescripcionEstado) {
-            console.log('Estado de descripción recibido:', DescripcionEstado); // Agrega esta línea para depuración
+            console.log('Estado de descripción recibido:', DescripcionEstado); 
             switch (DescripcionEstado) {
                 case 'Pagado':
                     return { estadoCirculo: '<span class="circle-green"></span>', DescripcionEstado: 'Pagado' };
