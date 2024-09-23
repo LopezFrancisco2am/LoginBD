@@ -2,17 +2,17 @@
 <html>
 <head>
     <title>Lista de Clientes</title>
-    <!-- Incluye Bootstrap CSS -->
+
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <style type="text/css">
         body {
-            background-color: #f0f0f0; /* Cambia el color de fondo aquí */
+            background-color: #f0f0f0;
         }
-        /* Opcional: Define el color del texto como negro por defecto */
+      
         .text-color-default {
-            color: black; /* Cambia el color del texto aquí si es necesario */
+            color: black; 
         }
     </style>
 </head>
@@ -33,7 +33,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Los datos se cargarán aquí con JavaScript -->
+                  
                         </tbody>
                     </table>
                 </div>
@@ -57,7 +57,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Los datos se cargarán aquí con JavaScript -->
+             
                         </tbody>
                     </table>
                 </div>
@@ -72,7 +72,7 @@
   
 
     <script>
-            fetch('/Acceso/GetClientes')
+            fetch('/Clientes/GetClientes')
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.querySelector('#clientesTable tbody');
@@ -96,11 +96,11 @@
                 })
 
 
-        fetch('/Acceso/GetClientesDeudores')
+        fetch('/Clientes/GetClientesDeudores')
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.querySelector('#DeudasTable tbody');
-                tableBody.innerHTML = ''; // Limpia el contenido actual               
+                tableBody.innerHTML = '';       
                 data.forEach(cliente => {
                     const textColorClass = 'text-color-default';
 

@@ -1,0 +1,82 @@
+﻿@{
+    var paquete = ViewBag.Paquete;
+    var error = ViewBag.Error;
+
+}
+
+<div class="container">
+    <h2>Detalles del Viaje</h2>
+
+    @if (paquete != null)
+    {
+        <div>
+            <p><strong>ID del Paquete:</strong> @paquete.PaqueteId</p>
+            <p><strong>Descripción:</strong> @paquete.Descripcion</p>
+            <p><strong>Cantidad de Pasajeros:</strong> @paquete.CantidadPasajeros</p>
+            <p><strong>Cliente ID:</strong> @paquete.ClienteId</p>
+            <p><strong>Precio:</strong> $@paquete.Precio</p>
+            <p><strong>Estado del paquete:</strong> @paquete.DescripcionEstado</p>
+        </div>
+    }
+    else if (error != null)
+    {
+        <div class="alert alert-danger">
+            @error
+        </div>
+    }
+
+    <div class="container">
+        <h4>Lista de Estadías</h4>
+        <div class="table-responsive">
+            <table id="estadiasTable" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>ID Estadía</th>
+                        <th>Fecha de Llegada</th>
+                        <th>Fecha de Salida</th>
+                        <th>Ubicación</th>
+                        <th>Hotel</th>
+                    </tr>
+                </thead>
+                <tbody>
+               
+                </tbody>
+            </table>
+        </div>
+    </div>
+   
+    <script>
+
+        const paqueteId = '@paquete.PaqueteId';
+        fetch(`/Paquetes/GetEstadias?paqueteId=${paqueteId}`)
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#estadiasTable tbody');
+                tableBody.innerHTML = ''; 
+
+                data.forEach(estadia => {
+
+                    const fechaLlegada = new Date(parseInt(estadia.FechaLlegada.replace(/\/Date\((\d+)\)\//, '$1')));
+                    const fechaSalida = new Date(parseInt(estadia.FechaSalida.replace(/\/Date\((\d+)\)\//, '$1')));              
+                    const opciones = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                    const fechaLlegadaFormateada = fechaLlegada.toLocaleDateString('es-ES', opciones);
+                    const fechaSalidaFormateada = fechaSalida.toLocaleDateString('es-ES', opciones);
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                <td>${estadia.IdEstadia || ''}</td>
+                <td>${fechaLlegadaFormateada}</td>
+                <td>${fechaSalidaFormateada}</td>
+                <td>${estadia.Ubicacion || ''}</td>
+                <td>${estadia.Hotel || ''}</td>
+            `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error al obtener las estadías:', error);
+            });
+
+
+    </script>
+</div>
