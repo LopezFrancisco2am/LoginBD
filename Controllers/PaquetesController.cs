@@ -10,7 +10,19 @@ namespace LoginBD.Controllers
 {
     public class PaquetesController : Controller
     {
-        public JsonResult GetPaquetes()
+        private static PaquetesController Instance { get; set; }
+        public static PaquetesController Instancia
+        {
+            get
+            {
+                if (Instance == null)
+                { Instance = new PaquetesController(); }
+                return Instance;
+            }
+        }
+      
+
+        public List<Paquete> GetPaquetes()
         {
             var paquetes = new List<Paquete>();
 
@@ -20,13 +32,13 @@ namespace LoginBD.Controllers
 
                 var queryPaquetes = @"
                 SELECT 
-                p.PaqueteId, 
-                p.Descripcion AS PaqueteDescripcion,
-                p.CantidadPasajeros,
-                p.ClienteId,
-                p.Precio,
-                p.IdEstadoPaquete,
-                e.Descripcion AS EstadoPaqueteDescripcion
+                 p.PaqueteId, 
+                 p.Descripcion AS PaqueteDescripcion,
+                 p.CantidadPasajeros,
+                 p.ClienteId,
+                 p.Precio,
+                 p.IdEstadoPaquete,
+                 e.Descripcion AS EstadoPaqueteDescripcion
                 FROM Paquete p
                 INNER JOIN EstadoPaquete e ON p.IdEstadoPaquete = e.IdEstadoPaquete";
 
@@ -50,45 +62,48 @@ namespace LoginBD.Controllers
                     }
                 }
 
+                // Obtener la información de los clientes
                 var clienteIds = paquetes.Select(p => p.ClienteId).Distinct().ToList();
-                var queryClientes = "SELECT * FROM Clientes WHERE ClienteId IN (" + string.Join(",", clienteIds) + ")";
-                var clientes = new Dictionary<int, Cliente>();
-
-                using (var command = new SqlCommand(queryClientes, sqlConnection))
+                if (clienteIds.Any())
                 {
-                    using (var reader = command.ExecuteReader())
+                    var queryClientes = "SELECT * FROM Clientes WHERE ClienteId IN (" + string.Join(",", clienteIds) + ")";
+                    var clientes = new Dictionary<int, Cliente>();
+
+                    using (var command = new SqlCommand(queryClientes, sqlConnection))
                     {
-                        while (reader.Read())
+                        using (var reader = command.ExecuteReader())
                         {
-                            var cliente = new Cliente
+                            while (reader.Read())
                             {
-                                ClienteId = reader.GetInt32(reader.GetOrdinal("ClienteId")),
-                                Nombre = reader.GetString(reader.GetOrdinal("Nombre")),
-                                Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono")) ? null : reader.GetString(reader.GetOrdinal("Telefono")),
-                                Direccion = reader.IsDBNull(reader.GetOrdinal("Direccion")) ? null : reader.GetString(reader.GetOrdinal("Direccion")),
-                                Email = reader.GetString(reader.GetOrdinal("Email"))
-                            };
-                            clientes[cliente.ClienteId] = cliente;
+                                var cliente = new Cliente
+                                {
+                                    ClienteId = reader.GetInt32(reader.GetOrdinal("ClienteId")),
+                                    Nombre = reader.GetString(reader.GetOrdinal("Nombre")),
+                                    Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono")) ? null : reader.GetString(reader.GetOrdinal("Telefono")),
+                                    Direccion = reader.IsDBNull(reader.GetOrdinal("Direccion")) ? null : reader.GetString(reader.GetOrdinal("Direccion")),
+                                    Email = reader.GetString(reader.GetOrdinal("Email"))
+                                };
+                                clientes[cliente.ClienteId] = cliente;
+                            }
+                        }
+                    }
+
+                    // Asociar cada cliente a su respectivo paquete
+                    foreach (var paquete in paquetes)
+                    {
+                        if (clientes.TryGetValue(paquete.ClienteId, out var cliente))
+                        {
+                            paquete.Cliente = cliente.Nombre;
                         }
                     }
                 }
-
-                foreach (var paquete in paquetes)
-                {
-                    if (clientes.TryGetValue(paquete.ClienteId, out var cliente))
-                    {
-                        paquete.Cliente = cliente;
-                    }
-                }
             }
-
-            return Json(paquetes, JsonRequestBehavior.AllowGet);
+            return paquetes;
         }
 
 
 
-
-        public JsonResult GetLugares()
+        public List<Destino> GetDestinos()
         {
             var destinos = new List<Destino>();
 
@@ -136,11 +151,11 @@ namespace LoginBD.Controllers
                 }
             }
 
-            return Json(destinos, JsonRequestBehavior.AllowGet);
+            return destinos;
         }
 
 
-        public JsonResult GetEstadias(int paqueteId)
+        public List<Estadia> GetEstadias(int PaqueteId)
         {
             List<Estadia> estadias = new List<Estadia>();
 
@@ -161,7 +176,7 @@ namespace LoginBD.Controllers
 
                 using (SqlCommand command = new SqlCommand(query, sqlConnection))
                 {
-                    command.Parameters.AddWithValue("@PaqueteId", paqueteId);
+                    command.Parameters.AddWithValue("@PaqueteId", PaqueteId);
 
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -180,9 +195,61 @@ namespace LoginBD.Controllers
                 }
             }
 
-            return Json(estadias, JsonRequestBehavior.AllowGet);
+            return estadias;
+        }
+
+        public ActionResult GetPaqueteById(int? paqueteId)
+        {
+            if (paqueteId.HasValue)
+            {
+                Paquete paquete = null;
+
+                using (SqlConnection sqlConnection = new SqlConnection(Conexion.Conexion.getConexion()))
+                {
+                    sqlConnection.Open();
+                    var queryPaquetes = @"
+            SELECT 
+                p.PaqueteId, 
+                p.Descripcion AS PaqueteDescripcion,
+                p.CantidadPasajeros,
+                p.ClienteId,
+                p.Precio,
+                p.IdEstadoPaquete,
+                e.Descripcion AS EstadoPaqueteDescripcion
+            FROM Paquete p
+            INNER JOIN EstadoPaquete e ON p.IdEstadoPaquete = e.IdEstadoPaquete 
+            WHERE PaqueteId = @paqueteId";
+
+
+                    using (var command = new SqlCommand(queryPaquetes, sqlConnection))
+                    {
+
+                        command.Parameters.AddWithValue("@paqueteId", paqueteId.Value);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                paquete = new Paquete
+                                {
+                                    PaqueteId = reader.GetInt32(reader.GetOrdinal("PaqueteId")),
+                                    Descripcion = reader.GetString(reader.GetOrdinal("PaqueteDescripcion")),
+                                    CantidadPasajeros = reader.GetInt32(reader.GetOrdinal("CantidadPasajeros")),
+                                    ClienteId = reader.GetInt32(reader.GetOrdinal("ClienteId")),
+                                    Precio = reader.GetDecimal(reader.GetOrdinal("Precio")),
+                                    DescripcionEstado = reader.GetString(reader.GetOrdinal("EstadoPaqueteDescripcion"))
+                                };
+                            }
+                        }
+                    }
+                }
+                if (paquete != null)
+                {
+                    TempData["Paquete"] = paquete;  
+                }
+            }
+            return RedirectToAction("Viajes", "Home");
         }
     }
-
 
 }

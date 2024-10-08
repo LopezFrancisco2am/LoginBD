@@ -1,7 +1,7 @@
 ﻿@{
-    var paquete = ViewBag.Paquete;
+    var paquete = ViewBag.Paquete as LoginBD.Models.Paquete;
+    var Estadias = ViewBag.Estadias as List<LoginBD.Models.Estadia>;
     var error = ViewBag.Error;
-
 }
 
 <div class="container">
@@ -39,44 +39,27 @@
                     </tr>
                 </thead>
                 <tbody>
-               
+                    @if (Estadias != null && Estadias.Any())
+                    {
+                        foreach (var e in Estadias)
+                        {
+                            <tr>
+                                <td>@e.IdEstadia</td>
+                                <td>@e.FechaLlegada</td>
+                                <td>@e.FechaSalida</td>
+                                <td>@e.Ubicacion</td>
+                                <td>@e.Hotel</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5">No se encontraron estadías.</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
     </div>
-   
-    <script>
-
-        const paqueteId = '@paquete.PaqueteId';
-        fetch(`/Paquetes/GetEstadias?paqueteId=${paqueteId}`)
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.querySelector('#estadiasTable tbody');
-                tableBody.innerHTML = ''; 
-
-                data.forEach(estadia => {
-
-                    const fechaLlegada = new Date(parseInt(estadia.FechaLlegada.replace(/\/Date\((\d+)\)\//, '$1')));
-                    const fechaSalida = new Date(parseInt(estadia.FechaSalida.replace(/\/Date\((\d+)\)\//, '$1')));              
-                    const opciones = { year: 'numeric', month: '2-digit', day: '2-digit' };
-                    const fechaLlegadaFormateada = fechaLlegada.toLocaleDateString('es-ES', opciones);
-                    const fechaSalidaFormateada = fechaSalida.toLocaleDateString('es-ES', opciones);
-
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                <td>${estadia.IdEstadia || ''}</td>
-                <td>${fechaLlegadaFormateada}</td>
-                <td>${fechaSalidaFormateada}</td>
-                <td>${estadia.Ubicacion || ''}</td>
-                <td>${estadia.Hotel || ''}</td>
-            `;
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(error => {
-                console.error('Error al obtener las estadías:', error);
-            });
-
-
-    </script>
 </div>

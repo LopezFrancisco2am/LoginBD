@@ -1,24 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using LoginBD.Models
+@{
+    var pagos = ViewBag.Pagos as List<Pago>;
+}
 <html>
 <head>
-    <title>Pagos</title>
-
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    <style type="text/css">
-        body {
-            background-color: #f0f0f0; 
-        }
-
-        .text-color-default {
-            color: black; 
-        }
-
-        .table-container {
-            margin-top: 30px;
-        }
-    </style>
+    <title>Pagos</title> 
 </head>
 <body>
     <div class="container">
@@ -29,7 +15,6 @@
                     <table id="pagosTable" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Monto</th>
                                 <th>Fecha de pago</th>
                                 <th>Paquete</th>
@@ -37,35 +22,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                          
+                            @if (pagos != null && pagos.Any())
+                            {
+                                foreach (var pago in pagos)
+                                {
+                                    <tr>
+                                        <td>@pago.Monto</td>
+                                        <td>@pago.FechaPago</td>
+                                        <td>@pago.Paquete</td>
+                                        <td>@pago.Cliente</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5">No se encontraron pagos.</td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        fetch('/Clientes/GetPagos')
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.querySelector('#pagosTable tbody');
-                tableBody.innerHTML = ''; 
-
-                data.forEach(pago => {
-             
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                <td>${pago.IdPago || ''}</td>
-                <td>${pago.Monto || ''}</td>
-                <td>${pago.FechaPago || ''}</td>
-                <td>${pago.Paquete || ''}</td>                            
-                <td>${pago.Cliente || ''}</td>
-            `;
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(error => console.error('Error al obtener datos de pagos:', error));
-    </script>
 </body>
 </html>

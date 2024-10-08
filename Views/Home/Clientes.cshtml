@@ -1,20 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using LoginBD.Models
+@{
+ //   ViewBag.Title = "Lista de Paquetes y Destinos Más Visitados";
+    var clientes = ViewBag.Clientes as List<Cliente>;
+    var deudores = ViewBag.Deudores as List<Cliente>;
+}
 <html>
 <head>
     <title>Lista de Clientes</title>
-
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    <style type="text/css">
-        body {
-            background-color: #f0f0f0;
-        }
-      
-        .text-color-default {
-            color: black; 
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -33,7 +25,25 @@
                             </tr>
                         </thead>
                         <tbody>
-                  
+                            @if (clientes != null && clientes.Any())
+                            {
+                                foreach (var c in clientes)
+                                {
+                                    <tr>
+                                        <td>@c.ClienteId</td>
+                                        <td>@c.Nombre</td>
+                                        <td>@c.Telefono</td>
+                                        <td>@c.Direccion</td>
+                                        <td>@c.Email</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5">No se encontraron clientes.</td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -48,7 +58,7 @@
                     <table id="DeudasTable" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                      
+
                                 <th>Nombre</th>
                                 <th>Teléfono</th>
                                 <th>Dirección</th>
@@ -57,68 +67,30 @@
                             </tr>
                         </thead>
                         <tbody>
-             
+                            @if (deudores != null && deudores.Any())
+                            {
+                                foreach (var d in deudores)
+                                {
+                                    <tr>
+                                        <td>@d.Nombre</td>
+                                        <td>@d.Telefono</td>
+                                        <td>@d.Direccion</td>
+                                        <td>@d.Email</td>
+                                        <td>@d.Monto</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5">No se encontraron deudores.</td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
-
     </div>
-
-
-
-  
-
-    <script>
-            fetch('/Clientes/GetClientes')
-                .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.querySelector('#clientesTable tbody');
-                    tableBody.innerHTML = ''; // Limpia el contenido actual               
-                        data.forEach(cliente => {                                           
-                            const textColorClass = 'text-color-default';
-
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                        <td class="${textColorClass}">${cliente.ClienteId || ''}</td>
-                                        <td class="${textColorClass}">${cliente.Nombre || ''}</td>
-                                        <td class="${textColorClass}">${cliente.Telefono || ''}</td>
-                                        <td class="${textColorClass}">${cliente.Direccion || ''}</td>
-                                        <td class="${textColorClass}">${cliente.Email || ''}</td>
-
-                                    `;
-                            tableBody.appendChild(row);
-                        });
-                    
-                    
-                })
-
-
-        fetch('/Clientes/GetClientesDeudores')
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.querySelector('#DeudasTable tbody');
-                tableBody.innerHTML = '';       
-                data.forEach(cliente => {
-                    const textColorClass = 'text-color-default';
-
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                                       
-                                        <td class="${textColorClass}">${cliente.Nombre || ''}</td>
-                                        <td class="${textColorClass}">${cliente.Telefono || ''}</td>
-                                        <td class="${textColorClass}">${cliente.Direccion || ''}</td>
-                                        <td class="${textColorClass}">${cliente.Email || ''}</td>
-                                        <td class="${textColorClass}">${cliente.Monto || ''}</td>
-
-                                    `;
-                    tableBody.appendChild(row);
-                });
-
-
-            })
-    </script>
 </body>
 </html>

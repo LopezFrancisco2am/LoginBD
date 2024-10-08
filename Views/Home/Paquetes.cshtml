@@ -1,56 +1,50 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Lista de Paquetes y Destinos Más Visitados</title>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    <style type="text/css">
-        body {
-            background-color: #f0f0f0; 
-        }
+﻿@using LoginBD.Models
+@{
+    ViewBag.Title = "Lista de Paquetes y Destinos Más Visitados";
+    var paquetes = ViewBag.Paquetes as List<Paquete>;
+    var destinos = ViewBag.Destinos as List<Destino>;
+}
 
-        .circle-red {
-            width: 10px;
-            height: 10px;
+<head>
+    <style>
+       
+        span.red {
             background-color: red;
             border-radius: 50%;
+            width: 16px;
+            height: 16px;
             display: inline-block;
-            vertical-align: middle;
-            margin-right: 5px;
         }
 
-        .circle-green {
-            width: 10px;
-            height: 10px;
+        span.green {
             background-color: green;
             border-radius: 50%;
+            width: 16px;
+            height: 16px;
             display: inline-block;
-            vertical-align: middle;
-            margin-right: 5px;
         }
 
-        .circle-black {
-            width: 10px;
-            height: 10px;
+        span.black {
             background-color: black;
             border-radius: 50%;
+            width: 16px;
+            height: 16px;
             display: inline-block;
-            vertical-align: middle;
-            margin-right: 5px;
         }
 
-        .text-color-default {
-            color: black; 
-        }
-
-        .table-container {
-            margin-top: 30px;
+        span.grey {
+            background-color: grey;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: inline-block;
         }
     </style>
 </head>
+<html>
 <body>
     <div class="container">
+
         <div class="row">
             <div class="col-md-12">
                 <h4>Lista de Paquetes</h4>
@@ -68,13 +62,56 @@
                             </tr>
                         </thead>
                         <tbody>
-                          
+                            @if (paquetes != null && paquetes.Any())
+                            {
+                                foreach (var paquete in paquetes)
+                                {
+                                    string estadoCirculo = "";
+                                    switch (paquete.DescripcionEstado)
+                                    {
+                                        case "Pagado":
+                                            estadoCirculo = "<span class='green'></span>";
+                                            break;
+                                        case "Pendiente de Pago":
+                                            estadoCirculo = "<span class='red'></span>";
+                                            break;
+                                        case "Cancelado":
+                                            estadoCirculo = "<span class='grey'></span>";
+                                            break;
+                                        default:
+                                            estadoCirculo = "<span class='grey'></span>";
+                                            break;
+                                    }
+
+                                    <tr>
+                                        <td>@paquete.PaqueteId</td>
+                                        <td>@paquete.Descripcion</td>
+                                        <td>@paquete.CantidadPasajeros</td>
+                                        <td>@paquete.Cliente?.Nombre</td>
+                                        <td>@paquete.Precio</td>
+                                        <td>
+                                            @Html.Raw(estadoCirculo) @paquete.DescripcionEstado
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("GetPaqueteById", "Paquetes", new { paqueteId = paquete.PaqueteId })" class="btn btn-sm btn-success">
+                                                <span class="glyphicon glyphicon-arrow-right"></span> Ver detalles
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7">No se encontraron paquetes.</td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
+  
         <div class="row table-container">
             <div class="col-md-12">
                 <h4>Destinos Más Visitados</h4>
@@ -82,86 +119,38 @@
                     <table id="destinosTable" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>ID Destino</th>
                                 <th>País</th>
                                 <th>Provincia</th>
                                 <th>Descripción</th>
-                                <th>Visitas</th>
+                                <th>Número de Visitas</th>
                             </tr>
                         </thead>
                         <tbody>
-                         
+                            @if (destinos != null && destinos.Any())
+                            {
+                                foreach (var destino in destinos)
+                                {
+                                    <tr>
+                                        <td>@destino.IdDestino</td>
+                                        <td>@destino.Pais</td>
+                                        <td>@destino.Provincia</td>
+                                        <td>@destino.Descripcion</td>
+                                        <td>@destino.NumeroVisitas</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5">No se encontraron destinos.</td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        fetch('/Paquetes/GetPaquetes')
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.querySelector('#paquetesTable tbody');
-                tableBody.innerHTML = '';
-
-                data.forEach(paquete => {                
-                    const { estadoCirculo, DescripcionEstado } = getEstadoCirculo(paquete.DescripcionEstado); 
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                                        <td>${paquete.PaqueteId || ''}</td>
-                                        <td>${paquete.Descripcion || ''}</td>
-                                        <td>${paquete.CantidadPasajeros || ''}</td>
-                                        <td>${paquete.Cliente ? paquete.Cliente.Nombre : ''}</td>
-                                        <td>${paquete.Precio || ''}</td>
-                                        <td>${estadoCirculo} ${DescripcionEstado}</td>
-                                        <td><button class="btn btn-primary" onclick="redirectToViajes(${paquete.PaqueteId})">Ver detalles</button></td>
-                                    `;
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(error => console.error('Error al obtener datos de paquetes:', error));
-
-
-        fetch('/Paquetes/GetLugares')
-            .then(response => response.json())
-            .then(data => {
-                console.log('Datos de destinos:', data);
-                const tableBody = document.querySelector('#destinosTable tbody');
-                tableBody.innerHTML = '';
-
-                data.forEach(destino => {
-              
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                                        <td>${destino.IdDestino || ''}</td>
-                                        <td>${destino.Pais || ''}</td>
-                                        <td>${destino.Provincia || ''}</td>
-                                        <td>${destino.Descripcion || ''}</td>
-                                        <td>${destino.NumeroVisitas || ''}</td>
-                                    `;
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(error => console.error('Error al obtener datos de destinos más visitados:', error));
-
-        function getEstadoCirculo(DescripcionEstado) {     
-            switch (DescripcionEstado) {
-                case 'Pagado':
-                    return { estadoCirculo: '<span class="circle-green"></span>', DescripcionEstado: 'Pagado' };
-                case 'Pendiente de Pago':
-                    return { estadoCirculo: '<span class="circle-red"></span>', DescripcionEstado: 'Pendiente de Pago' };
-                case 'Cancelado':
-                    return { estadoCirculo: '<span class="circle-black"></span>', DescripcionEstado: 'Cancelado' };
-                default:
-                    return { estadoCirculo: '', DescripcionEstado: 'Desconocido' };
-            }
-        }
-
-        function redirectToViajes(paqueteId) {
-            window.location.href = `/Home/Viajes?paqueteId=${paqueteId}`;
-        }
-
-    </script>
 </body>
 </html>

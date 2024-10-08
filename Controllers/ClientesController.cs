@@ -10,14 +10,25 @@ namespace LoginBD.Controllers
 {
     public class ClientesController : Controller
     {
-        public JsonResult GetClientesDeudores()
+        private static ClientesController Instance { get; set; }
+        public static ClientesController Instancia
+        {
+            get
+            {
+                if (Instance == null)
+                { Instance = new ClientesController(); }
+                return Instance;
+            }
+        }
+
+        public List<Cliente> GetClientesDeudores()
         {
             var clientes = new List<Cliente>();
 
             using (SqlConnection sqlConnection = new SqlConnection(Conexion.Conexion.getConexion()))
             {
                 sqlConnection.Open();
-
+                //Idestadopaquete 1 es pendiente de pago
                 var query = "SELECT TOP 5 Clientes.Nombre, Clientes.Direccion, Clientes.Email, Clientes.Telefono, sum(Paquete.Precio) AS Deuda FROM Clientes" +
                     "\r\ninner join paquete ON Paquete.ClienteId =Clientes.ClienteId and Paquete.IdEstadoPaquete = 1" +
                     "\r\nGROUP BY Clientes.Nombre, Clientes.Direccion, Clientes.Email, Clientes.Telefono\r\n" +
@@ -43,13 +54,13 @@ namespace LoginBD.Controllers
                 }
             }
 
-            return Json(clientes, JsonRequestBehavior.AllowGet);
+            return clientes;
         }
 
 
 
         [HttpGet]
-        public JsonResult GetClientes()
+        public List<Cliente> GetClientes()
         {
             var clientes = new List<Cliente>();
 
@@ -78,11 +89,11 @@ namespace LoginBD.Controllers
                 }
             }
 
-            return Json(clientes, JsonRequestBehavior.AllowGet);
+            return clientes; ;
         }
 
 
-        public JsonResult GetPagos()
+        public List<Pago> GetPagos()
         {
             var pagos = new List<Pago>();
 
@@ -113,7 +124,7 @@ namespace LoginBD.Controllers
                 }
             }
 
-            return Json(pagos, JsonRequestBehavior.AllowGet);
+            return pagos;
         }
 
 

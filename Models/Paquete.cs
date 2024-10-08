@@ -13,7 +13,7 @@ namespace LoginBD.Models
         public int ClienteId { get; set; }
         public decimal Precio { get; set; }
         public string DescripcionEstado { get; set; }
-        public Cliente Cliente { get; set; }
+        public string Cliente { get; set; }
 
     }
 }

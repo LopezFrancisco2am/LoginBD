@@ -15,79 +15,45 @@ namespace LoginBD.Controllers
 
         public ActionResult Pagos()
         {
+            ViewBag.Pagos = ClientesController.Instancia.GetPagos();
             return View();
         }
 
         public ActionResult Clientes()
         {
+            ViewBag.Clientes = ClientesController.Instancia.GetClientes();
+            ViewBag.Deudores = ClientesController.Instancia.GetClientesDeudores();
             return View();
         }
 
         public ActionResult Paquetes()
         {
-            return View();
+            ViewBag.Paquetes = PaquetesController.Instancia.GetPaquetes();
+            ViewBag.Destinos = PaquetesController.Instancia.GetDestinos();
+            return View();       
         }
 
-        public ActionResult Viajes(int? paqueteId)
+        public ActionResult Viajes()
         {
-            if (paqueteId.HasValue)
+            Paquete paquete = TempData["Paquete"] as Paquete; 
+
+            if (paquete != null)
             {
-                Paquete paquete = null; 
-
-                using (SqlConnection sqlConnection = new SqlConnection(Conexion.Conexion.getConexion()))
-                {
-                    sqlConnection.Open();
-                    var queryPaquetes = @"
-            SELECT 
-                p.PaqueteId, 
-                p.Descripcion AS PaqueteDescripcion,
-                p.CantidadPasajeros,
-                p.ClienteId,
-                p.Precio,
-                p.IdEstadoPaquete,
-                e.Descripcion AS EstadoPaqueteDescripcion
-            FROM Paquete p
-            INNER JOIN EstadoPaquete e ON p.IdEstadoPaquete = e.IdEstadoPaquete 
-            WHERE PaqueteId = @paqueteId";
-
-                 
-                    using (var command = new SqlCommand(queryPaquetes, sqlConnection))
-                    {
-                  
-                        command.Parameters.AddWithValue("@paqueteId", paqueteId.Value);
-
-                        using (var reader = command.ExecuteReader())
-                        {
-                            if (reader.Read())  
-                            {
-                                paquete = new Paquete
-                                {
-                                    PaqueteId = reader.GetInt32(reader.GetOrdinal("PaqueteId")),
-                                    Descripcion = reader.GetString(reader.GetOrdinal("PaqueteDescripcion")),
-                                    CantidadPasajeros = reader.GetInt32(reader.GetOrdinal("CantidadPasajeros")),
-                                    ClienteId = reader.GetInt32(reader.GetOrdinal("ClienteId")),
-                                    Precio = reader.GetDecimal(reader.GetOrdinal("Precio")),
-                                    DescripcionEstado = reader.GetString(reader.GetOrdinal("EstadoPaqueteDescripcion"))
-                                };
-                            }
-                        }
-                    }
-                }
-
-                if (paquete != null)
-                {
-                    ViewBag.Paquete = paquete; 
-                }
-                else
-                {
-                    ViewBag.Error = "Paquete no encontrado.";
-                }
+                ViewBag.Paquete = paquete;
             }
             else
             {
-                ViewBag.Error = "No se proporcionó ningún ID de paquete.";
+                ViewBag.Error = "Paquete no encontrado.";
             }
-
+            var estadias = PaquetesController.Instancia.GetEstadias(paquete.PaqueteId);
+            if (estadias != null)
+            {
+                ViewBag.Estadias = estadias;
+            }
+            else
+            {
+                ViewBag.Error = "estadia no encontrada.";
+            }
             return View();
         }
 

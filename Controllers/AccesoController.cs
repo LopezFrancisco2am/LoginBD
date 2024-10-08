@@ -70,5 +70,25 @@ namespace LoginBD.Controllers
             }
             return sb.ToString();
         }
+
+
+
+        /*
+         CREATE PROCEDURE sp_ValidarUsuario
+        @Correo nvarchar(60),
+        @Clave nvarchar(100)
+        AS
+        BEGIN
+            IF EXISTS (SELECT * FROM USUARIO WHERE Correo = @Correo AND Clave = @Clave)
+            BEGIN
+                SELECT IdUsuario FROM USUARIO WHERE Correo = @Correo AND Clave = @Clave;
+            END
+            ELSE 
+            BEGIN
+                SELECT 0;
+            END
+        END
+
+         */
     }
 }
