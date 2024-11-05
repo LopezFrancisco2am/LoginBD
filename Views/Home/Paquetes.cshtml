@@ -87,7 +87,7 @@
                                         <td>@paquete.PaqueteId</td>
                                         <td>@paquete.Descripcion</td>
                                         <td>@paquete.CantidadPasajeros</td>
-                                        <td>@paquete.Cliente?.Nombre</td>
+                                        <td>@paquete.Cliente</td>
                                         <td>@paquete.Precio</td>
                                         <td>
                                             @Html.Raw(estadoCirculo) @paquete.DescripcionEstado
@@ -121,8 +121,7 @@
                             <tr>
                                 <th>ID Destino</th>
                                 <th>País</th>
-                                <th>Provincia</th>
-                                <th>Descripción</th>
+                                <th>Ciudad</th>
                                 <th>Número de Visitas</th>
                             </tr>
                         </thead>
@@ -134,8 +133,7 @@
                                     <tr>
                                         <td>@destino.IdDestino</td>
                                         <td>@destino.Pais</td>
-                                        <td>@destino.Provincia</td>
-                                        <td>@destino.Descripcion</td>
+                                        <td>@destino.Ciudad</td>
                                         <td>@destino.NumeroVisitas</td>
                                     </tr>
                                 }

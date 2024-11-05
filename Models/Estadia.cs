@@ -10,7 +10,7 @@ namespace LoginBD.Models
         public int IdEstadia { get; set; }
         public DateTime FechaLlegada { get; set; }
         public DateTime FechaSalida { get; set; }
-        public string Ubicacion { get; set; }
-        public String Hotel { get; set; }
+        public string Ubicacion { get; set; }  
+        public string Hotel { get; set; }
     }
 }

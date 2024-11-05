@@ -115,8 +115,7 @@ namespace LoginBD.Controllers
                 SELECT TOP 3
                     d.IdDestino,
                     d.Pais,
-                    d.Provincia,
-                    d.Descripcion,
+                    d.Ciudad,
                     COUNT(e.IdEstadia) AS NumeroDeVisitas
                 FROM
                     Destinos d
@@ -125,8 +124,7 @@ namespace LoginBD.Controllers
                 GROUP BY
                     d.IdDestino,
                     d.Pais,
-                    d.Provincia,
-                    d.Descripcion
+                    d.Ciudad
                 ORDER BY
                     NumeroDeVisitas DESC;
             ";
@@ -141,8 +139,7 @@ namespace LoginBD.Controllers
                             {
                                 IdDestino = reader.GetInt32(reader.GetOrdinal("IdDestino")),
                                 Pais = reader.GetString(reader.GetOrdinal("Pais")),
-                                Provincia = reader.GetString(reader.GetOrdinal("Provincia")),
-                                Descripcion = reader.GetString(reader.GetOrdinal("Descripcion")),
+                                Ciudad = reader.GetString(reader.GetOrdinal("Ciudad")),
                                 NumeroVisitas = reader.GetInt32(reader.GetOrdinal("NumeroDeVisitas"))
                             };
                             destinos.Add(destino);
@@ -168,7 +165,8 @@ namespace LoginBD.Controllers
                 Estadias.FechaLlegada, 
                 Estadias.FechaSalida, 
                 Hoteles.Nombre AS Hotel, 
-                Destinos.Pais AS Ubicacion
+                Destinos.Pais AS Pais,
+                Destinos.Ciudad AS Ciudad
             FROM Estadias
             INNER JOIN Hoteles ON Estadias.IdHotel = Hoteles.IdHotel
             INNER JOIN Destinos ON Hoteles.IdDestino = Destinos.IdDestino
@@ -187,7 +185,8 @@ namespace LoginBD.Controllers
                                 IdEstadia = reader.GetInt32(reader.GetOrdinal("IdEstadia")),
                                 FechaLlegada = reader.GetDateTime(reader.GetOrdinal("FechaLlegada")),
                                 FechaSalida = reader.GetDateTime(reader.GetOrdinal("FechaSalida")),
-                                Ubicacion = reader.GetString(reader.GetOrdinal("Ubicacion")),
+                                Ubicacion = reader.GetString(reader.GetOrdinal("Pais"))+ (", ") +
+                                reader.GetString(reader.GetOrdinal("Ciudad")),
                                 Hotel = reader.GetString(reader.GetOrdinal("Hotel"))
                             });
                         }
