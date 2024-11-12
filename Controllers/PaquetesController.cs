@@ -241,7 +241,28 @@ namespace LoginBD.Controllers
                             }
                         }
                     }
+                    var clienteIds = paquete.ClienteId;
+                    var queryClientes = "SELECT * FROM Clientes WHERE ClienteId IN (" + string.Join(",", clienteIds) + ")";
+                    using (var command = new SqlCommand(queryClientes, sqlConnection))
+                    {
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var cliente = new Cliente
+                                {
+                                    ClienteId = reader.GetInt32(reader.GetOrdinal("ClienteId")),
+                                    Nombre = reader.GetString(reader.GetOrdinal("Nombre")),
+                                    Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono")) ? null : reader.GetString(reader.GetOrdinal("Telefono")),
+                                    Direccion = reader.IsDBNull(reader.GetOrdinal("Direccion")) ? null : reader.GetString(reader.GetOrdinal("Direccion")),
+                                    Email = reader.GetString(reader.GetOrdinal("Email"))
+                                };
+                                paquete.Cliente = cliente.Nombre;
+                            }
+                        }
+                    }
                 }
+
                 if (paquete != null)
                 {
                     TempData["Paquete"] = paquete;  

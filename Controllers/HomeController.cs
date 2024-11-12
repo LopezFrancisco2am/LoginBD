@@ -40,19 +40,20 @@ namespace LoginBD.Controllers
             if (paquete != null)
             {
                 ViewBag.Paquete = paquete;
+                var estadias = PaquetesController.Instancia.GetEstadias(paquete.PaqueteId);
+                if (estadias != null)
+                {
+                    ViewBag.Estadias = estadias;
+                }
+                else
+                {
+                    ViewBag.Error = "estadia no encontrada.";
+                }
+                
             }
             else
             {
                 ViewBag.Error = "Paquete no encontrado.";
-            }
-            var estadias = PaquetesController.Instancia.GetEstadias(paquete.PaqueteId);
-            if (estadias != null)
-            {
-                ViewBag.Estadias = estadias;
-            }
-            else
-            {
-                ViewBag.Error = "estadia no encontrada.";
             }
             return View();
         }

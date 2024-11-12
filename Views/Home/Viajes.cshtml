@@ -9,12 +9,11 @@
 
     @if (paquete != null)
     {
-        <div>
-            <p><strong>ID del Paquete:</strong> @paquete.PaqueteId</p>
+        <div>         
             <p><strong>Descripción:</strong> @paquete.Descripcion</p>
             <p><strong>Cantidad de Pasajeros:</strong> @paquete.CantidadPasajeros</p>
-            <p><strong>Cliente ID:</strong> @paquete.ClienteId</p>
-            <p><strong>Precio:</strong> $@paquete.Precio</p>
+            <p><strong>Cliente:</strong> @paquete.Cliente</p>
+            <p><strong>Precio $:</strong> @paquete.Precio</p>
             <p><strong>Estado del paquete:</strong> @paquete.DescripcionEstado</p>
         </div>
     }
@@ -31,7 +30,6 @@
             <table id="estadiasTable" class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>ID Estadía</th>
                         <th>Fecha de Llegada</th>
                         <th>Fecha de Salida</th>
                         <th>Ubicación</th>
